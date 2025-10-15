@@ -3,7 +3,7 @@ set -euo pipefail
 
 usage() {
   echo "Usage: $(basename "$0") <series_name>" >&2
-  echo "Generates a YouTube series structure (001 + next.sh) with clear naming:" >&2
+  echo "Generates under repo's lib directory (000 overview + 001 + next.sh):" >&2
   echo "  input/script/{draft,final}, input/assets, output/{video,slides_html}, publish/links" >&2
 }
 
@@ -13,13 +13,23 @@ if [[ ${1:-} == "-h" || ${1:-} == "--help" || $# -lt 1 ]]; then
 fi
 
 SERIES_NAME="$1"
-BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
-SERIES_DIR="$BASE_DIR/$SERIES_NAME"
+# Resolve repo root relative to this script: AI/scripts -> repo root
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+LIB_DIR="$REPO_ROOT/lib"
+# Ensure lib directory exists
+mkdir -p "$LIB_DIR"
+SERIES_DIR="$LIB_DIR/$SERIES_NAME"
 
 # Initialize series directory and the first episode structure
 if [[ -e "$SERIES_DIR" ]]; then
   echo "Series already exists: $SERIES_DIR"
 else
+  # Create series overview directory (000) on first initialization
+  mkdir -p "$SERIES_DIR/000"
+  touch "$SERIES_DIR/000/overview.md"
+  echo "Initialized: $SERIES_DIR/000"
+
   mkdir -p "$SERIES_DIR/001/input/script/draft" \
            "$SERIES_DIR/001/input/script/final" \
            "$SERIES_DIR/001/input/assets" \
