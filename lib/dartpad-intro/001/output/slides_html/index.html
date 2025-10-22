@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dart入門 #01 – DartPadでHello Dart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .slide {
+            display: none;
+        }
+        .slide.active {
+            display: block;
+        }
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .keyword { color: #ff79c6; }
+        .function { color: #50fa7b; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .type { color: #8be9fd; }
+
+        /* Custom animation for slide transitions */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .code-block code {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white flex flex-col justify-center items-center min-h-screen p-4 overflow-hidden">
+
+    <div id="slide-container" class="w-full max-w-4xl aspect-[16/9] bg-slate-800 rounded-lg shadow-2xl flex flex-col justify-center items-center p-12 relative">
+        <!-- Slides will be injected here by JS -->
+    </div>
+
+    <div class="mt-6 flex items-center justify-between w-full max-w-4xl">
+        <button id="prevBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            前へ
+        </button>
+        <div id="slide-counter" class="text-slate-400 text-lg font-medium"></div>
+        <button id="nextBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
+            次へ
+        </button>
+    </div>
+
+    <script>
+        const slides = [
+            // Slide 1: Title
+            `
+            <div class="text-center">
+                <div class="text-2xl font-bold text-indigo-400 mb-2">Dart入門 #01</div>
+                <h1 class="text-6xl font-bold tracking-tight">DartPadで<br/>Hello Dart</h1>
+                <p class="mt-6 text-xl text-slate-400">インストール不要ではじめるプログラミングの第一歩</p>
+            </div>
+            `,
+            // Slide 2: Goal
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-8">今日のゴール</h2>
+                <div class="bg-slate-700/50 p-8 rounded-lg">
+                    <p class="text-3xl font-semibold leading-relaxed">ブラウザだけでDartを実行して、<br/><span class="text-yellow-300 font-mono bg-slate-900 px-3 py-1 rounded">Hello, Dart</span> を表示する</p>
+                </div>
+                <p class="mt-8 text-xl text-slate-300">DartPadを使って、インストールなしで手軽にスタートしましょう！</p>
+            </div>
+            `,
+            // Slide 3: What is Dart?
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-8">そもそもDartとは？</h2>
+                <ul class="space-y-6 text-2xl">
+                    <li class="flex items-start"><span class="text-indigo-400 mr-4 text-3xl">›</span> <span>Googleが開発したプログラミング言語</span></li>
+                    <li class="flex items-start"><span class="text-indigo-400 mr-4 text-3xl">›</span> <span>Flutterでアプリを作る時の<span class="font-bold text-yellow-300">土台</span>になる</span></li>
+                    <li class="flex items-start"><span class="text-indigo-400 mr-4 text-3xl">›</span> <span>特徴：<span class="bg-slate-700 px-3 py-1 rounded-md">シンプルな文法</span> <span class="bg-slate-700 px-3 py-1 rounded-md">強力な非同期処理</span> <span class="bg-slate-700 px-3 py-1 rounded-md">Null安全</span></span></li>
+                </ul>
+            </div>
+            `,
+            // Slide 4: What is DartPad?
+            `
+            <div class="w-full text-center">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">DartPadを使ってみよう</h2>
+                <p class="text-xl text-slate-300 mb-8">ブラウザでDartのコードを実行できる公式ツールです</p>
+                <div class="bg-slate-900 rounded-lg p-6 border border-slate-700 grid grid-cols-2 gap-4 h-[300px]">
+                    <div class="border border-slate-600 rounded-lg p-4 flex flex-col">
+                        <div class="text-slate-400 mb-2 font-semibold">エディタ</div>
+                        <div class="bg-slate-800 rounded flex-grow text-left p-2 text-sm text-slate-300 font-mono">
+                            void main() {<br/>
+                            &nbsp;&nbsp;print('Hello, Dart');<br/>
+                            }
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                         <div class="border border-indigo-500 rounded-lg p-4 flex-grow flex items-center justify-center">
+                            <span class="text-indigo-400 font-bold text-lg">▶ Runボタン</span>
+                        </div>
+                        <div class="border border-slate-600 rounded-lg p-4 flex-grow">
+                            <div class="text-slate-400 mb-2 font-semibold">コンソール</div>
+                            <div class="bg-slate-800 rounded flex-grow text-left p-2 text-sm text-yellow-300 font-mono">
+                                Hello, Dart
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `,
+            // Slide 5: How to use DartPad
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-8">DartPadの基本的な使い方</h2>
+                <ol class="space-y-6">
+                    <li class="bg-slate-700/50 p-4 rounded-lg flex items-center"><span class="text-4xl font-bold text-indigo-400 mr-6">1.</span> <span class="text-2xl">エディタにコードを入力する</span></li>
+                    <li class="bg-slate-700/50 p-4 rounded-lg flex items-center"><span class="text-4xl font-bold text-indigo-400 mr-6">2.</span> <span class="text-2xl"><span class="font-bold text-indigo-300">▶ Run</span> ボタンをクリック</span></li>
+                    <li class="bg-slate-700/50 p-4 rounded-lg flex items-center"><span class="text-4xl font-bold text-indigo-400 mr-6">3.</span> <span class="text-2xl">コンソールに出力を確認する</span></li>
+                </ol>
+                <div class="mt-8 bg-red-900/50 border border-red-500 text-red-200 px-6 py-4 rounded-lg">
+                    <span class="font-bold">💡よくある躓きポイント:</span> 行末のセミコロン <span class="font-mono text-yellow-300">;</span> を忘れずに！
+                </div>
+            </div>
+            `,
+            // Slide 6: Minimum Code
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">プログラムの最小構成</h2>
+                <p class="text-2xl mb-6 text-slate-300"><span class="font-mono text-yellow-300 bg-slate-900/80 px-2 py-1 rounded">main</span> 関数が、プログラムが実行されるときの<span class="font-bold text-yellow-300">「入口」</span>です。</p>
+                <div class="code-block text-xl"><code><span class="keyword">void</span> <span class="function">main</span>() {
+  <span class="comment">// この { } の中に処理を書いていく</span>
+}</code></div>
+            </div>
+            `,
+            // Slide 7: Print to Console
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">文字を表示する \`print\`</h2>
+                <p class="text-2xl mb-6 text-slate-300"><span class="font-mono text-yellow-300 bg-slate-900/80 px-2 py-1 rounded">print()</span> を使うとコンソールに文字を表示できます。</p>
+                <div class="code-block text-xl"><code><span class="keyword">void</span> <span class="function">main</span>() {
+  <span class="function">print</span>(<span class="string">'Hello, Dart'</span>);
+}</code></div>
+                 <p class="mt-6 text-xl text-slate-300"><span class="font-mono text-yellow-300">' '</span> (シングルクォート)で囲んだ文字が表示されます。</p>
+            </div>
+            `,
+            // Slide 8: Demo
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">実際にやってみよう！</h2>
+                 <ol class="space-y-3 mb-6 text-xl">
+                    <li>1. DartPadを開く</li>
+                    <li>2. 下のコードを貼り付ける</li>
+                    <li>3. <span class="font-bold text-indigo-300">▶ Run</span> をクリック</li>
+                </ol>
+                <div class="code-block"><code><span class="keyword">void</span> <span class="function">main</span>() {
+  <span class="function">print</span>(<span class="string">'Hello, Dart'</span>);
+}</code></div>
+                <div class="mt-6 text-center bg-green-900/50 border border-green-500 text-green-200 px-6 py-4 rounded-lg">
+                    <p class="text-xl">コンソールに <span class="font-mono text-yellow-300">Hello, Dart</span> と表示されれば成功です！ 🎉</p>
+                </div>
+            </div>
+            `,
+            // Slide 9: Challenge
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">挑戦してみよう</h2>
+                <p class="text-2xl mb-6 text-slate-300">printをもう1行追加して、2行表示してみましょう。</p>
+                <div class="code-block text-lg"><code><span class="keyword">void</span> <span class="function">main</span>() {
+  <span class="function">print</span>(<span class="string">'Hello, Dart'</span>);
+  <span class="function">print</span>(<span class="string">'2行目も表示できます'</span>);
+}</code></div>
+            </div>
+            `,
+            // Slide 10: Summary
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-8">今日のまとめ</h2>
+                <ul class="space-y-6 text-3xl">
+                    <li class="bg-slate-700/50 p-5 rounded-lg">✅ <span class="font-bold">DartPad</span> の基本的な使い方を覚えた</li>
+                    <li class="bg-slate-700/50 p-5 rounded-lg">✅ <span class="font-mono text-yellow-300 bg-slate-900/80 px-2 rounded">main</span> 関数がプログラムの入口だと知った</li>
+                    <li class="bg-slate-700/50 p-5 rounded-lg">✅ <span class="font-mono text-yellow-300 bg-slate-900/80 px-2 rounded">print</span> で文字を表示できるようになった</li>
+                </ul>
+            </div>
+            `,
+            // Slide 11: Next Time
+            `
+            <div class="w-full text-center">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-8">次回予告</h2>
+                <div class="bg-slate-700/50 p-8 rounded-lg">
+                    <p class="text-3xl font-semibold leading-relaxed">変数・型・定数・Null安全</p>
+                </div>
+                <p class="mt-8 text-2xl text-slate-300">プログラムで<span class="font-bold text-yellow-300">「値」</span>を扱えるようになります！</p>
+                 <p class="mt-12 text-xl text-slate-400">チャンネル登録もぜひ！</p>
+            </div>
+            `,
+        ];
+
+        let currentSlide = 0;
+        const slideContainer = document.getElementById('slide-container');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounter = document.getElementById('slide-counter');
+
+        function showSlide(index) {
+            slideContainer.innerHTML = `<div class="slide active w-full h-full flex flex-col justify-center items-center">${slides[index]}</div>`;
+            slideCounter.textContent = `${index + 1} / ${slides.length}`;
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === slides.length - 1;
+            
+            if (index === slides.length - 1) {
+                nextBtn.textContent = '終了';
+            } else {
+                nextBtn.textContent = '次へ';
+            }
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Initial load
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
+

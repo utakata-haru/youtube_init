@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dart入門 #03 – 演算子と制御構文</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .slide {
+            display: none;
+        }
+        .slide.active {
+            display: block;
+        }
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .keyword { color: #ff79c6; }
+        .function { color: #50fa7b; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .type { color: #8be9fd; }
+        .number { color: #bd93f9; }
+        .operator { color: #ff79c6; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .code-block code {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white flex flex-col justify-center items-center min-h-screen p-4 overflow-hidden">
+
+    <div id="slide-container" class="w-full max-w-4xl aspect-[16/9] bg-slate-800 rounded-lg shadow-2xl flex flex-col justify-center items-center p-12 relative">
+        <!-- Slides will be injected here by JS -->
+    </div>
+
+    <div class="mt-6 flex items-center justify-between w-full max-w-4xl">
+        <button id="prevBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            前へ
+        </button>
+        <div id="slide-counter" class="text-slate-400 text-lg font-medium"></div>
+        <button id="nextBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
+            次へ
+        </button>
+    </div>
+
+    <script>
+        const slides = [
+            // Slide 1: Title
+            `
+            <div class="text-center">
+                <div class="text-2xl font-bold text-indigo-400 mb-2">Dart入門 #03</div>
+                <h1 class="text-6xl font-bold tracking-tight">演算子と制御構文</h1>
+                <p class="mt-6 text-xl text-slate-400">プログラムに「ロジック」を組み込む</p>
+            </div>
+            `,
+            // Slide 2: Goal
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-8">今日のゴール</h2>
+                <div class="bg-slate-700/50 p-8 rounded-lg">
+                    <p class="text-3xl font-semibold leading-relaxed">DartPadで<span class="text-yellow-300">簡単なロジック</span>を書けるようになる</p>
+                </div>
+                <p class="mt-8 text-xl text-slate-300">計算、条件分岐、繰り返しの3つの基本をマスターします。</p>
+            </div>
+            `,
+            // Slide 3: Arithmetic Operators
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">① 演算子 (算術)</h2>
+                <p class="text-2xl mb-6 text-slate-300">値を使って計算するための記号です。</p>
+                <div class="code-block text-lg"><code><span class="type">final</span> a = <span class="number">7</span>, b = <span class="number">3</span>;
+
+<span class="function">print</span>(a <span class="operator">+</span> b); <span class="comment">// 10 (足し算)</span>
+<span class="function">print</span>(a <span class="operator">-</span> b); <span class="comment">// 4 (引き算)</span>
+<span class="function">print</span>(a <span class="operator">*</span> b); <span class="comment">// 21 (掛け算)</span>
+<span class="function">print</span>(a <span class="operator">/</span> b); <span class="comment">// 2.33... (割り算)</span>
+<span class="function">print</span>(a <span class="operator">~/</span> b); <span class="comment">// 2 (割り算の整数部分)</span>
+<span class="function">print</span>(a <span class="operator">%</span> b); <span class="comment">// 1 (割り算の余り)</span>
+</code></div>
+            </div>
+            `,
+            // Slide 4: Comparison & Logical Operators
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">① 演算子 (比較と論理)</h2>
+                <p class="text-2xl mb-6 text-slate-300">2つの値を比べたり、条件を組み合わせたりします。</p>
+                <div class="code-block text-lg"><code><span class="type">final</span> a = <span class="number">7</span>, b = <span class="number">3</span>;
+<span class="function">print</span>(a <span class="operator">></span> b); <span class="comment">// true (aはbより大きい)</span>
+<span class="function">print</span>(a <span class="operator">==</span> b); <span class="comment">// false (aとbは等しい)</span>
+<span class="function">print</span>(a <span class="operator">!=</span> b); <span class="comment">// true (aとbは等しくない)</span>
+
+<span class="comment">// aが0より大きい、かつ、bが0より大きい</span>
+<span class="function">print</span>((a <span class="operator">></span> <span class="number">0</span>) <span class="operator">&&</span> (b <span class="operator">></span> <span class="number">0</span>)); <span class="comment">// true</span>
+
+<span class="comment">// aが0より大きい、または、bが0より大きい</span>
+<span class="function">print</span>((a <span class="operator">></span> <span class="number">0</span>) <span class="operator">||</span> (b <span class="operator"><</span> <span class="number">0</span>)); <span class="comment">// true</span>
+</code></div>
+            </div>
+            `,
+             // Slide 5: Ternary Operator
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">① 演算子 (三項演算子)</h2>
+                <p class="text-2xl mb-6 text-slate-300">もしAならB、そうでなければC、というシンプルな分岐を1行で書けます。</p>
+                <div class="bg-slate-700 p-4 rounded-lg text-2xl font-mono text-center mb-6">
+                    <span class="text-yellow-300">条件</span> <span class="text-indigo-400">?</span> <span class="text-green-300">Trueの場合の値</span> <span class="text-indigo-400">:</span> <span class="text-red-300">Falseの場合の値</span>
+                </div>
+                <div class="code-block text-lg"><code><span class="type">final</span> score = <span class="number">82</span>;
+
+<span class="comment">// scoreが80点以上なら '合格'、そうでなければ '不合格'</span>
+<span class="type">final</span> message = score <span class="operator">>=</span> <span class="number">80</span> <span class="operator">?</span> <span class="string">'合格'</span> <span class="operator">:</span> <span class="string">'不合格'</span>;
+
+<span class="function">print</span>(message); <span class="comment">// '合格' と表示される</span>
+</code></div>
+            </div>
+            `,
+            // Slide 6: if/else
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">② 条件分岐 (if / else)</h2>
+                <p class="text-2xl mb-6 text-slate-300">プログラムに「もし〜なら〜する」という判断をさせます。</p>
+                <div class="code-block text-lg"><code><span class="type">final</span> score = <span class="number">82</span>;
+
+<span class="keyword">if</span> (score <span class="operator">>=</span> <span class="number">90</span>) {
+  <span class="function">print</span>(<span class="string">'A'</span>);
+} <span class="keyword">else if</span> (score <span class="operator">>=</span> <span class="number">80</span>) {
+  <span class="function">print</span>(<span class="string">'B'</span>); <span class="comment">// scoreは82なので、これが実行される</span>
+} <span class="keyword">else</span> {
+  <span class="function">print</span>(<span class="string">'C'</span>);
+}
+</code></div>
+                 <p class="mt-4 text-lg text-slate-400">💡 三項演算子は、この <span class="font-mono text-yellow-300">if/else</span> のシンプルな書き方です。</p>
+            </div>
+            `,
+            // Slide 7: switch
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">② 条件分岐 (switch)</h2>
+                <p class="text-2xl mb-6 text-slate-300">特定の値に基づいて、処理をきれいに振り分けるときに使います。</p>
+                <div class="code-block text-lg"><code><span class="comment">// カテゴリを定義 (enumについては後ほど詳しく)</span>
+<span class="keyword">enum</span> <span class="type">Category</span> { food, tech, other }
+<span class="keyword">const</span> cat = <span class="type">Category</span>.tech;
+
+<span class="keyword">switch</span> (cat) {
+  <span class="keyword">case</span> <span class="type">Category</span>.food:
+    <span class="function">print</span>(<span class="string">'食料品です'</span>);
+    <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="type">Category</span>.tech:
+    <span class="function">print</span>(<span class="string">'テクノロジーです'</span>); <span class="comment">// これが実行される</span>
+    <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="type">Category</span>.other:
+    <span class="function">print</span>(<span class="string">'その他です'</span>);
+    <span class="keyword">break</span>;
+}
+</code></div>
+            </div>
+            `,
+            // Slide 8: for-in loop
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">③ 反復処理 (for-in)</h2>
+                <p class="text-2xl mb-6 text-slate-300">リストなどの集まりから、中身を1つずつ取り出して処理します。</p>
+                <div class="code-block text-lg"><code><span class="comment">// 1, 2, 3, 4, 5 が入ったリスト (詳細は次回)</span>
+<span class="type">final</span> nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="type">var</span> sum = <span class="number">0</span>;
+
+<span class="comment">// numsからnを1つずつ取り出す</span>
+<span class="keyword">for</span> (<span class="type">final</span> n <span class="keyword">in</span> nums) {
+  sum = sum <span class="operator">+</span> n; <span class="comment">// sumにnを足していく</span>
+}
+
+<span class="function">print</span>(sum); <span class="comment">// 1+2+3+4+5 = 15 が表示される</span>
+</code></div>
+            </div>
+            `,
+            // Slide 9: while loop
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">③ 反復処理 (while)</h2>
+                <p class="text-2xl mb-6 text-slate-300">「〜である限り、ずっと」処理を繰り返します。</p>
+                <div class="code-block text-lg"><code><span class="type">var</span> i = <span class="number">0</span>;
+
+<span class="comment">// iが3未満である限り、{ } の中を繰り返す</span>
+<span class="keyword">while</span> (i <span class="operator"><</span> <span class="number">3</span>) {
+  <span class="function">print</span>(<span class="string">'i=$i'</span>);
+  i<span class="operator">++</span>; <span class="comment">// iを1増やす (忘れると無限ループ！)</span>
+}
+
+<span class="comment">// 実行結果:</span>
+<span class="comment">// i=0</span>
+<span class="comment">// i=1</span>
+<span class="comment">// i=2</span>
+</code></div>
+            </div>
+            `,
+             // Slide 10: break & continue
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-6">③ 反復処理 (break / continue)</h2>
+                <p class="text-2xl mb-6 text-slate-300">ループを途中で制御します。</p>
+                 <div class="grid grid-cols-2 gap-4 text-xl">
+                    <div class="bg-slate-700 p-4 rounded-lg"><span class="font-mono text-red-300">break</span>: ループを<span class="font-bold">完全に中断</span>して抜け出す</div>
+                    <div class="bg-slate-700 p-4 rounded-lg"><span class="font-mono text-yellow-300">continue</span>: 今回の処理を<span class="font-bold">スキップ</span>して次の回に進む</div>
+                </div>
+                <div class="code-block text-lg mt-4"><code><span class="type">final</span> nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="type">var</span> sum = <span class="number">0</span>;
+<span class="keyword">for</span> (<span class="type">final</span> n <span class="keyword">in</span> nums) {
+  <span class="keyword">if</span> (n <span class="operator">==</span> <span class="number">4</span>) <span class="keyword">continue</span>; <span class="comment">// 4の場合は足さずにスキップ</span>
+  sum <span class="operator">+=</span> n;
+}
+<span class="function">print</span>(sum); <span class="comment">// 1+2+3+5 = 11 が表示される</span>
+</code></div>
+            </div>
+            `,
+            // Slide 11: Summary
+            `
+            <div class="w-full text-left">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-8">今日のまとめ</h2>
+                <ul class="space-y-4 text-2xl">
+                    <li class="bg-slate-700/50 p-4 rounded-lg">✅ <span class="font-bold">演算子</span>で計算や比較ができるようになった。<br/>(<span class="font-mono text-yellow-300">/</span> と <span class="font-mono text-yellow-300">~/</span> の違い、<span class="font-mono text-yellow-300">==</span>, <span class="font-mono text-yellow-300">&&</span>, <span class="font-mono text-yellow-300">?:</span>)</li>
+                    <li class="bg-slate-700/50 p-4 rounded-lg">✅ <span class="font-bold">条件分岐</span>で処理を分けられるようになった。<br/>(<span class="font-mono text-yellow-300">if/else</span>, <span class="font-mono text-yellow-300">switch</span>)</li>
+                    <li class="bg-slate-700/50 p-4 rounded-lg">✅ <span class="font-bold">反復処理</span>で繰り返しができるようになった。<br/>(<span class="font-mono text-yellow-300">for-in</span>, <span class="font-mono text-yellow-300">while</span>, <span class="font-mono text-yellow-300">continue</span>)</li>
+                </ul>
+            </div>
+            `,
+            // Slide 12: Next Time
+            `
+            <div class="w-full text-center">
+                <h2 class="text-4xl font-bold text-indigo-400 mb-8">次回予告</h2>
+                <div class="bg-slate-700/50 p-8 rounded-lg">
+                    <p class="text-3xl font-semibold leading-relaxed">関数とパラメータ</p>
+                </div>
+                <p class="mt-8 text-2xl text-slate-300">処理を<span class="font-bold text-yellow-300">「ひとまとめ」</span>にして、便利に使い回せるようになります！</p>
+                 <p class="mt-12 text-xl text-slate-400">ぜひチャンネル登録をしてお待ちください！</p>
+            </div>
+            `,
+        ];
+
+        let currentSlide = 0;
+        const slideContainer = document.getElementById('slide-container');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounter = document.getElementById('slide-counter');
+
+        function showSlide(index) {
+            slideContainer.innerHTML = `<div class="slide active w-full h-full flex flex-col justify-center items-center">${slides[index]}</div>`;
+            slideCounter.textContent = `${index + 1} / ${slides.length}`;
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === slides.length - 1;
+            
+            if (index === slides.length - 1) {
+                nextBtn.textContent = '終了';
+            } else {
+                nextBtn.textContent = '次へ';
+            }
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Initial load
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
