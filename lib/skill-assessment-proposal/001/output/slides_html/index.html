@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>業務スキル評価システム 提案</title>
+  <style>
+    :root { --fg:#1b1f23; --muted:#6a737d; --bg:#ffffff; --accent:#0969da; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; }
+    section { min-height: 100vh; box-sizing: border-box; padding: 56px 64px; border-bottom: 1px solid #eee; }
+    h1,h2 { margin: 0 0 16px; }
+    h1 { font-size: 40px; }
+    h2 { font-size: 28px; color: var(--accent); }
+    ul { margin:0; padding-left: 20px; line-height: 1.6; }
+    .foot { position: fixed; bottom: 16px; right: 24px; color: var(--muted); font-size: 12px; }
+    .subtitle { color: var(--muted); margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <section>
+    <h1>業務スキル評価システム 提案</h1>
+    <div class="subtitle">目的: 配属の質・速度向上と教育コスト最適化</div>
+    <ul>
+      <li>手順書解析 → スキル評価 → 業務割当 → 教材推薦 → 再評価</li>
+      <li>不足スキルはプロジェクト標準ワークフローで教材自動生成（HTML/動画）</li>
+      <li>効果測定と改善ループで継続的に最適化</li>
+    </ul>
+    <div class="foot">Slide 1 / 12</div>
+  </section>
+
+  <section>
+    <h2>背景・課題</h2>
+    <ul>
+      <li>スキルと業務のミスマッチ、立ち上がりの遅さ</li>
+      <li>教育の属人化・効果測定の難しさ</li>
+      <li>教材の散在と更新負荷、基準の不統一</li>
+    </ul>
+    <div class="foot">Slide 2 / 12</div>
+  </section>
+
+  <section>
+    <h2>解決コンセプト</h2>
+    <ul>
+      <li>手順書から必要スキルを自動抽出、評価項目を自動生成</li>
+      <li>評価スコアで業務割当、足りないスキルに教材を推薦</li>
+      <li>教材は <code>AI/scripts/youtube_gen.sh</code> でシリーズ構成を標準化</li>
+    </ul>
+    <div class="foot">Slide 3 / 12</div>
+  </section>
+
+  <section>
+    <h2>主要機能</h2>
+    <ul>
+      <li>業務手順書の解析（手順/要件/制約/必要スキル）</li>
+      <li>スキル評価（チェックリスト/テスト問題の自動生成）</li>
+      <li>業務割当ロジック（閾値・優先度・リスク）</li>
+      <li>教材レコメンド（HTMLスライド/動画、レベル別）</li>
+      <li>ダッシュボードで効果測定と改善ループ</li>
+    </ul>
+    <div class="foot">Slide 4 / 12</div>
+  </section>
+
+  <section>
+    <h2>アーキテクチャ（概略）</h2>
+    <ul>
+      <li>データ層: 手順書、スキル辞書、評価結果、履歴</li>
+      <li>アプリ層: 解析、評価生成、割当、推薦、UI</li>
+      <li>学習資産: <code>lib/&lt;シリーズ&gt;/000/overview.md</code> と 001/… の教材群</li>
+      <li>インテグレーション: CIで教材シリーズの追加/更新を自動化</li>
+    </ul>
+    <div class="foot">Slide 5 / 12</div>
+  </section>
+
+  <section>
+    <h2>ワークフロー</h2>
+    <ul>
+      <li>登録→解析→評価→受験→割当→学習→再評価→改善</li>
+      <li>教材はシリーズ単位で管理し、統一トーン・用語を維持</li>
+    </ul>
+    <div class="foot">Slide 6 / 12</div>
+  </section>
+
+  <section>
+    <h2>評価ロジック例</h2>
+    <ul>
+      <li>スキルごとに難易度/重み/閾値を設定</li>
+      <li>ロール別基準（オペレーター/リーダー）で最適割当</li>
+    </ul>
+    <div class="foot">Slide 7 / 12</div>
+  </section>
+
+  <section>
+    <h2>教材レコメンド例</h2>
+    <ul>
+      <li>初級: 導入スライド/短尺動画、演習付き</li>
+      <li>中級: 応用パターン/ケーススタディ</li>
+      <li>上級: 設計思考/例外処理/監査観点</li>
+    </ul>
+    <div class="foot">Slide 8 / 12</div>
+  </section>
+
+  <section>
+    <h2>UIイメージ</h2>
+    <ul>
+      <li>管理UI: 手順書管理、評価設計、受講・結果、教材管理</li>
+      <li>受験UI: チェックリスト/テスト、解説、再受験</li>
+      <li>学習UI: スライド/動画閲覧、進捗、フィードバック</li>
+    </ul>
+    <div class="foot">Slide 9 / 12</div>
+  </section>
+
+  <section>
+    <h2>セキュリティ・運用</h2>
+    <ul>
+      <li>権限管理、監査ログ、PII/機密情報保護</li>
+      <li>モジュール設計、スケール、運用手順</li>
+    </ul>
+    <div class="foot">Slide 10 / 12</div>
+  </section>
+
+  <section>
+    <h2>ロードマップ</h2>
+    <ul>
+      <li>フェーズ1: PoC（2〜3業務）/ 教材シリーズ（001〜003）</li>
+      <li>フェーズ2: Pilot（部署単位）/ ダッシュボード整備</li>
+      <li>フェーズ3: Rollout（全社）/ 改善ループ定着</li>
+    </ul>
+    <div class="foot">Slide 11 / 12</div>
+  </section>
+
+  <section>
+    <h2>成功指標・ROI / 次のステップ</h2>
+    <ul>
+      <li>期間短縮 -30〜50%、ミス率 -20〜40%、コスト -15〜30%</li>
+      <li>次のステップ: 対象業務選定 → PoC準備 → スケジュール合意</li>
+    </ul>
+    <div class="foot">Slide 12 / 12</div>
+  </section>
+</body>
+</html>
